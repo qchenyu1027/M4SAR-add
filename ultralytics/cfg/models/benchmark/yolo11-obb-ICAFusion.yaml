@@ -50,6 +50,8 @@ backbone:
   # - [[7,18], 1, Iterative_Differential_TransformerFusionBlock, [256, 20, 20]] #  IRD
   # - [[9,20], 1, Iterative_Differential_TransformerFusionBlock, [512, 16, 16]] #  IRD
 #  # - [[13,24], 1, Iterative_Differential_TransformerFusionBlock, [1024, 10, 10]] #  IRD
+
+
 #  - [[7,18], 1, MultiTransformerBlock, [256, 8, 3]]   # 20 two stream fuse
 #  - [[9,20], 1, MultiTransformerBlock, [512, 16, 3]]    # 21 two stream fuse
 #  - [[13,24], 1, MultiTransformerBlock, [1024, 32, 3]]    # 22 two stream fuse
@@ -58,12 +60,6 @@ backbone:
 #  - [ [9,20], 1, SSF, [ 1024 ,True,False,False,True,False,False] ] # MS2Fsuion
 #  - [ [13,24], 1, SSF, [ 2048 ,True,False,False,True,False,False] ] # MS2Fsuione
 
-  - [[7, 18], 1, KanConvFusionBlock, [256, 20, 20]]       # 25 P3
-  - [[9, 20], 1, KanConvFusionBlock, [512, 16, 16]]       # 26 P4
-  - [[13, 24], 1, KanConvFusionBlock, [1024, 8, 8]]     # 27 P5
-#  - [[7, 18], 1, KanConvFusionBlock, [1,1]]       # 25 P3
-#  - [[9, 20], 1, KanConvFusionBlock, [1,1]]       # 26 P4
-#  - [[13, 24], 1, KanConvFusionBlock, [1,1]]
 
 # YOLO11n head
 head:

@@ -1,129 +1,93 @@
-<div align="center">
-<!-- <h1> M4-SAR </h1> -->
-<h3> <a href="https://arxiv.org/abs/2505.10931">M4-SAR: A Multi-Resolution, Multi-Polarization, Multi-Scene, Multi-Source Dataset and Benchmark for Optical-SAR Fusion Object Detection</h3>
-<h4> 2025</h4>
-</div>
+# M4-SAR
 
-## **Examples of scenes and categories in the proposed M4-SAR dataset.**
-<p align="center"> <img src="https://github.com/wchao0601/M4-SAR/blob/master/img/motivation.png" width="90%"> </p>
+面向光学影像与 SAR 影像融合目标检测的实验仓库，基于 M4-SAR 数据集及 Ultralytics 检测框架。仓库包含数据处理、训练、测试、预测可视化和热力图生成代码，并在原有方法基础上加入了 **IRDFUSION** 与 **MS2FUSION**。
 
-## **Statistical visualization of category attributes in M4-SAR dataset.**
-<p align="center"> <img src="https://github.com/wchao0601/M4-SAR/blob/master/img/data-statistics.png" width="90%"> </p>
+## 数据集
 
-## **Overall Framework.**
-<p align="center"> <img src="https://github.com/wchao0601/M4-SAR/blob/master/img/overall-network.png" width="90%"> </p>
+M4-SAR 包含多分辨率、多极化、多场景和多源影像，图像尺寸为 `512 × 512`，共 6 个类别。数据下载地址：
 
-## **Architectural details of the proposed FAM, CMIM, and AFM modules.**
-<p align="center"> <img src="https://github.com/wchao0601/M4-SAR/blob/master/img/FAM-CMIM-AFM.png" width="90%"> </p>
+- [Kaggle](https://kaggle.com/datasets/a8ca500cbad658d8ae1af3d1f84566a5b4e94fe0ddb0be801c9e2f672db36a57)
+- [Baidu 网盘](https://pan.baidu.com/s/14iuaf_2ymzpP68EJY0dUyg?pwd=0601)
+- [Hugging Face](https://huggingface.co/datasets/wchao0601/m4-sar)
 
-## Usage
-### Installation
-Create and activate a conda environment:
-```
-conda create -n e2e-osdet python=3.11
-conda activate e2e-osdet
-```
-Install the required packages:
-```
-git clone https://github.com/wchao0601/M4-SAR.git
-cd M4-SAR/
-pip install torch==2.1.1 torchvision==0.16.1 torchaudio==2.1.1 --index-url https://download.pytorch.org/whl/cu118
+数据集的光学分辨率与 SAR 极化信息如下：
+
+| 文件范围 | 光学分辨率 | SAR 极化 |
+| --- | --- | --- |
+| `1.jpg ~ 56087.jpg` | 10 m | VH |
+| `56088.jpg ~ 112174.jpg` | 60 m | VV |
+
+## 方法
+
+除 M4-SAR 原有的融合模型外，本仓库新增：
+
+- **IRDFUSION**：基于迭代差分 Transformer 的跨模态特征交互与融合方法。
+- **MS2FUSION**：基于 SSF 等模块实现的多尺度跨模态特征融合方法。
+
+对应网络模块位于 `ultralytics/nn/modules/`，模型配置位于 `ultralytics/cfg/models/`。可根据实验需要选择相应 YAML 配置进行训练。
+
+## 环境安装
+
+```bash
+conda create -n m4-sar python=3.11
+conda activate m4-sar
+
+pip install torch==2.1.1 torchvision==0.16.1 torchaudio==2.1.1 \
+  --index-url https://download.pytorch.org/whl/cu118
 pip install seaborn thop timm einops
-cd STTrack/mamba_install/causal-conv1d
-CAUSAL_CONV1D_FORCE_BUILD=TRUE pip install .
-cd ../selective_scan
-pip install .
-cd M4-SAR/ 
 pip install -r requirements.txt
 ```
-We provide a complete environment configuration [log](https://github.com/wchao0601/M4-SAR/blob/master/create-environment-log.docx) for your reference.
 
-### Optical and SAR Attributes by File Range
+项目中的 `STTrack/mamba_install/` 包含部分需要本地编译安装的依赖；如果使用对应 Mamba 模块，请先安装 `causal-conv1d` 和 `selective_scan`。
 
-| File Range        | Optical Image Resolution | SAR Image Polarization |
-|:---:|:---:|:---:|
-| 1.jpg ~ 56087.jpg      | 10 meters                | VH                     |
-| 56088.jpg ~ 112174.jpg | 60 meters           | VV                     |
+## 使用方式
 
+在 `train.py` 中设置数据集、模型配置和设备后运行：
 
-### Data Preparation
-
-| Dataset | Link1 | Link2 | Link3 | SR & Pola. | Image Size | Category | Ins.num | Img.num |
-| :---: | :---: | :---: | :---: | :---:| :---: | :---: | :---: | :---: |
-| M4-SAR | [Kaggle](https://kaggle.com/datasets/a8ca500cbad658d8ae1af3d1f84566a5b4e94fe0ddb0be801c9e2f672db36a57)|[Baidu](https://pan.baidu.com/s/14iuaf_2ymzpP68EJY0dUyg?pwd=0601)|[Hug-Face](https://huggingface.co/datasets/wchao0601/m4-sar)|10M, 60M, VH, VV|512 x 512|6|981,862|112,174|
-
-### Dataset and Label Structure
-<p align="center"> <img src="https://github.com/wchao0601/M4-SAR/blob/master/img/m4-sar-structure.png" width="90%"> </p>
-
-
-### Single-GPU Train
-```python
-# please set 'device=0' in train.py
+```bash
+# 单 GPU
 python train.py
-```
 
-### Multi-GPU Train
-```python
-# please set 'device=[0,1]' in train.py
+# 多 GPU：先在 multigpu-train.py 中设置 device
 python multigpu-train.py
-```
 
-### Test
-```python
+# 测试
 python test.py
 ```
 
-### Gen-Predict
+预测标签、预测结果可视化和热力图：
 
-```python
-Each time you need to generate labels, you need to do the following:
-1. Rename 'predictor.py' under M4-SAR/ultralytics/engine/ to 'predictor-train.py'
-2. Rename 'predictor-inf.py' under M4-SAR/ultralytics/engine/ to 'predictor.py'
-3. Execute python gen-predict-label.py
-4. After inference is complete.
-5. Rename 'predictor.py' under M4-SAR/ultralytics/engine/ to 'predictor-inf.py'
-6. Rename 'predictor-train.py' under M4-SAR/ultralytics/engine/ to 'predictor.py'
-```
-
-### Vis-Predict
-```python
+```bash
+python gen-predict-label.py
 python vis-predict-label.py
-```
-
-### Gen-Heatmap
-```python
 python gen-heatmap.py
 ```
 
-## Results
+训练入口和配置中的路径需要根据本地数据位置进行调整。已有训练结果保存在 `runs/` 目录中。
 
-|  Model     |Weight Link |  Img size (pixels)  |  #Para(M)  |  Tra.Time (h)  |  Inf.Time (ms)  |  AP50 (%)  |  AP75 (%)  |  mAP (%)  |
-| :---:      | :---: | :---:| :---: | :---: | :---: | :---: | :---: | :---: |
-|  CFT       |[Download](https://pan.baidu.com/s/1KjlbzaW_KcsyKyQ7ziUwDg?pwd=0601)    |  512 x 512  |  53.8  |  60.6  |  40.6    |  84.6   |  68.9   |  59.9    |
-|  CLANet    |[Download](https://pan.baidu.com/s/1xq7p5ujbRh86WaoxVnEIag?pwd=0601)    |  512 x 512  |  48.2  |  56.2  |  29.1    |  84.6   |  68.5   |  59.6    |
-|  CSSA      |[Download](https://pan.baidu.com/s/1M8atC_WC5IUsBEfoQanJ2g?pwd=0601)    |  512 x 512  |  13.5  |  25.7  |  12.3    |  83.4   |  66.4   |  58.0    |
-|  CMADet    |[Download](https://pan.baidu.com/s/1pnZoEzIbf9Z5KQnQbN4vXg?pwd=0601)    |  512 x 512  |  41.5  |  52.4  |  46.7    |  81.5   |  63.5   |  55.7    |
-|  ICAFusion |[Download](https://pan.baidu.com/s/186bPEbk_BwvUXkZD_M1Y7Q?pwd=0601)    |  512 x 512  |  29.0  |  47.7  |  23.6    |  84.5   |  67.3   |  58.8    |
-|  MMIDet    |[Download](https://pan.baidu.com/s/1iB3x_cmOHJFmSVB2zSUsBw?pwd=0601)    |  512 x 512  |  53.8  |  49.9  |  41.9    |  84.8   |  68.6   |  59.8    |
-|  E2E-OSDet |[Download](https://pan.baidu.com/s/1GFUONCYPBntRg5_IpUqRYg?pwd=0601)    |  512 x 512  |  27.5  |  42.1  |  20.9    |  85.7   |  70.3   |  61.4    |
+## 项目结构
 
-### All weights
-[Google Drive](https://drive.google.com/file/d/1ZOGOBLtZEg1pQ_0SkqclgP5XXJsYUkU1/view?usp=sharing)
-
-## Contact
-If you have any questions, please feel free to contact me via email at wchao0601@163.com
-
-## Citation
-If our work is helpful, you can cite our paper:
+```text
+M4-SAR/
+├── ultralytics/              # 检测框架及融合模块
+├── ultralytics/cfg/models/   # 模型配置
+├── STTrack/                  # Mamba 相关依赖
+├── train.py                  # 单 GPU 训练
+├── multigpu-train.py         # 多 GPU 训练
+├── test.py                   # 测试
+└── runs/                     # 训练输出
 ```
+
+## 引用
+
+如果本项目或 M4-SAR 数据集对你的研究有帮助，请引用：
+
+```bibtex
 @article{wang2025m4,
   title={M4-SAR: A Multi-Resolution, Multi-Polarization, Multi-Scene, Multi-Source Dataset and Benchmark for Optical-SAR Fusion Object Detection},
   author={Wang, Chao and Lu, Wei and Li, Xiang and Yang, Jian and Luo, Lei},
   journal={arXiv preprint arXiv:2505.10931},
   year={2025}
 }
-
 ```
-## Acknowledgment
-- This repo is based on [Ultralytics](https://github.com/ultralytics/ultralytics), [CFT](https://github.com/DocF/multispectral-object-detection), [CLANet](https://github.com/hexiao0275/CALNet-Dronevehicle), [CSSA](https://github.com/artrela/mulitmodal-cssa), [CMADet](https://github.com/VDT-2048/DVTOD), [ICAFusion](https://github.com/chanchanchan97/ICAFusion) and [MMIDet](https://github.com/joewybean/MMI-Det) which are excellent works.
-- We thank the [STTrack](https://github.com/NJU-PCALab/STTrack) and [YOLOv12](https://github.com/sunsmarterjie/yolov12) libraries, which help us to implement our ideas quickly.
+
