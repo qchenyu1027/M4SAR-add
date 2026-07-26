@@ -1,0 +1,6 @@
+# ninja log v7
+0	11656	1771208054557338234	/home/ubuntu/qqqcy/M4-SAR/M4-SAR-master/selective_scan/build/temp.linux-x86_64-cpython-39/csrc/selective_scan/selective_scan.o	cc8f1db8a92e7298
+0	12571	1771208054557338234	/home/ubuntu/qqqcy/M4-SAR/M4-SAR-master/selective_scan/build/temp.linux-x86_64-cpython-39/csrc/selective_scan/selective_scan_core_fwd2.o	5356315172208243
+0	17040	1771208054557338234	/home/ubuntu/qqqcy/M4-SAR/M4-SAR-master/selective_scan/build/temp.linux-x86_64-cpython-39/csrc/selective_scan/selective_scan_core_fwd3.o	849a4676bb30fa4c
+1	22558	1771208054558338235	/home/ubuntu/qqqcy/M4-SAR/M4-SAR-master/selective_scan/build/temp.linux-x86_64-cpython-39/csrc/selective_scan/selective_scan_core_fwd4.o	482af084122c083a
+0	32410	1771208054557338234	/home/ubuntu/qqqcy/M4-SAR/M4-SAR-master/selective_scan/build/temp.linux-x86_64-cpython-39/csrc/selective_scan/selective_scan_core.o	4ee9b238bce4b010

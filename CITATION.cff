@@ -1,0 +1,21 @@
+# This CITATION.cff file was generated with https://bit.ly/cffinit
+
+cff-version: 1.0.0
+title: E2E-OSDet
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Chao
+    family-names: Wang
+  - family-names: Wei
+    given-names: Lu
+  - given-names: Xiang
+    family-names: Li
+  - given-names: Lei
+    family-names: Luo
+repository-code: 'https://github.com/wchao0601/M4-SAR'
+license: AGPL-3.0
+version: 1.0.0
+date-released: '2025.05.23'
